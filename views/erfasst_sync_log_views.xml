@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List view -->
+    <record id="view_erfasst_sync_log_list" model="ir.ui.view">
+        <field name="name">erfasst.sync.log.list</field>
+        <field name="model">erfasst.sync.log</field>
+        <field name="arch" type="xml">
+            <tree string="123erfasst Synchronisationsprotokoll"
+                  decoration-success="state == 'ok'"
+                  decoration-warning="state == 'warning'"
+                  decoration-danger="state == 'error'">
+                <field name="create_date" string="Zeitpunkt"/>
+                <field name="name"/>
+                <field name="operation"/>
+                <field name="project_id"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'ok'"
+                       decoration-warning="state == 'warning'"
+                       decoration-danger="state == 'error'"/>
+                <field name="records_processed"/>
+                <field name="records_updated"/>
+                <field name="records_skipped"/>
+                <field name="user_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form view (readonly detail) -->
+    <record id="view_erfasst_sync_log_form" model="ir.ui.view">
+        <field name="name">erfasst.sync.log.form</field>
+        <field name="model">erfasst.sync.log</field>
+        <field name="arch" type="xml">
+            <form string="Synchronisationsprotokoll" create="false" edit="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="operation"/>
+                            <field name="project_id"/>
+                            <field name="state" widget="badge"
+                                   decoration-success="state == 'ok'"
+                                   decoration-warning="state == 'warning'"
+                                   decoration-danger="state == 'error'"/>
+                        </group>
+                        <group>
+                            <field name="records_processed"/>
+                            <field name="records_updated"/>
+                            <field name="records_skipped"/>
+                            <field name="user_id"/>
+                            <field name="create_date" string="Zeitpunkt"/>
+                        </group>
+                    </group>
+                    <group string="Details" invisible="not detail">
+                        <field name="detail" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search view -->
+    <record id="view_erfasst_sync_log_search" model="ir.ui.view">
+        <field name="name">erfasst.sync.log.search</field>
+        <field name="model">erfasst.sync.log</field>
+        <field name="arch" type="xml">
+            <search string="Synchronisationsprotokoll">
+                <field name="name"/>
+                <field name="project_id"/>
+                <filter name="ok" string="Erfolg" domain="[('state', '=', 'ok')]"/>
+                <filter name="warning" string="Warnung" domain="[('state', '=', 'warning')]"/>
+                <filter name="error" string="Fehler" domain="[('state', '=', 'error')]"/>
+                <separator/>
+                <filter name="push_project" string="Projekt-Push" domain="[('operation', '=', 'push_project')]"/>
+                <filter name="pull_times" string="Zeiten-Import" domain="[('operation', '=', 'pull_times')]"/>
+                <filter name="push_planning" string="Planungs-Push" domain="[('operation', '=', 'push_planning')]"/>
+                <group expand="0" string="Gruppieren nach">
+                    <filter name="group_operation" string="Typ" context="{'group_by': 'operation'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_project" string="Projekt" context="{'group_by': 'project_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_erfasst_sync_log" model="ir.actions.act_window">
+        <field name="name">Synchronisationsprotokoll</field>
+        <field name="res_model">erfasst.sync.log</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_erfasst_sync_log_search"/>
+    </record>
+
+    <!-- Top-level menu under Project -->
+    <menuitem id="menu_erfasst_root"
+              name="123erfasst"
+              parent="project.menu_main_pm"
+              sequence="99"
+              groups="erfasst_connector.group_erfasst_user"/>
+
+    <menuitem id="menu_erfasst_sync_log"
+              name="Synchronisationsprotokoll"
+              parent="menu_erfasst_root"
+              action="action_erfasst_sync_log"
+              groups="erfasst_connector.group_erfasst_user"
+              sequence="10"/>
+
+</odoo>

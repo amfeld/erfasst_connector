@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_employee_form_erfasst" model="ir.ui.view">
+        <field name="name">hr.employee.form.erfasst</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="123erfasst" name="erfasst_employee"
+                      groups="erfasst_connector.group_erfasst_user">
+                    <group>
+                        <field name="x_123erfasst_person_ident"
+                               string="Person-Ident (123erfasst)"
+                               readonly="1"/>
+                    </group>
+                    <field name="x_123erfasst_mapping_ids" nolabel="1"
+                           groups="erfasst_connector.group_erfasst_manager">
+                        <tree editable="bottom">
+                            <field name="erfasst_person_ident"/>
+                            <field name="erfasst_person_name"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_erfasst_planning_wizard_form" model="ir.ui.view">
+        <field name="name">erfasst.planning.wizard.form</field>
+        <field name="model">erfasst.planning.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Planung zu 123erfasst übertragen">
+                <field name="state" invisible="1"/>
+                <sheet>
+
+                    <!-- Step 1: select date range -->
+                    <group invisible="state != 'select'">
+                        <group string="Zeitraum auswählen">
+                            <field name="project_id" readonly="1"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                        <div class="alert alert-info" role="status">
+                            Es werden alle Planungseinträge (planning.slot) des Projekts
+                            im gewählten Zeitraum abgerufen und zu 123erfasst übertragen.
+                            Mitarbeiter ohne 123erfasst-Zuordnung werden übersprungen.
+                        </div>
+                    </group>
+
+                    <!-- Step 2: preview -->
+                    <group invisible="state != 'preview'">
+                        <group string="Ergebnis">
+                            <field name="pushed_count" string="Werden übertragen"/>
+                            <field name="skipped_count" string="Übersprungen (keine Zuordnung)"/>
+                        </group>
+                        <field name="line_ids" nolabel="1">
+                            <tree decoration-success="status == 'ok'"
+                                  decoration-warning="status == 'no_employee'">
+                                <field name="employee_id"/>
+                                <field name="erfasst_person_name"/>
+                                <field name="date_start"/>
+                                <field name="date_end"/>
+                                <field name="minutes"/>
+                                <field name="status" widget="badge"
+                                       decoration-success="status == 'ok'"
+                                       decoration-warning="status == 'no_employee'"/>
+                            </tree>
+                        </field>
+                    </group>
+
+                    <!-- Step 3: done -->
+                    <group invisible="state != 'done'">
+                        <div class="alert alert-success" role="alert">
+                            <strong>Planung übertragen.</strong>
+                            <span> </span>
+                            <field name="pushed_count" nolabel="1" readonly="1"/>
+                            <span> Einträge wurden zu 123erfasst übertragen.</span>
+                        </div>
+                        <group>
+                            <field name="log_id" string="Protokolleintrag" readonly="1"/>
+                        </group>
+                    </group>
+
+                </sheet>
+                <footer>
+                    <button name="action_fetch_preview"
+                            string="Vorschau laden"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'select'"/>
+                    <button name="action_confirm_push"
+                            string="Planungseinträge pushen"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'preview'"/>
+                    <button name="action_back"
+                            string="Zurück"
+                            type="object"
+                            invisible="state not in ('preview', 'done')"/>
+                    <button string="Abbrechen"
+                            class="btn-secondary"
+                            special="cancel"
+                            invisible="state == 'done'"/>
+                    <button string="Schließen"
+                            class="btn-secondary"
+                            special="cancel"
+                            invisible="state != 'done'"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_erfasst_pull_wizard_form" model="ir.ui.view">
+        <field name="name">erfasst.pull.wizard.form</field>
+        <field name="model">erfasst.pull.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Zeiten aus 123erfasst importieren">
+                <field name="state" invisible="1"/>
+                <sheet>
+
+                    <!-- Step 1: select date range -->
+                    <group invisible="state != 'select'">
+                        <group string="Zeitraum auswählen">
+                            <field name="project_id" readonly="1"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                    </group>
+
+                    <!-- Step 2: preview -->
+                    <group invisible="state != 'preview'">
+                        <group string="Ergebnis">
+                            <field name="preview_total" string="Einträge gesamt"/>
+                            <field name="preview_new" string="Neu (werden importiert)"/>
+                            <field name="preview_changed" string="Geändert (werden aktualisiert)"/>
+                            <field name="preview_skipped" string="Übersprungen"/>
+                        </group>
+                        <field name="preview_line_ids" nolabel="1">
+                            <tree editable="bottom"
+                                  decoration-success="status == 'new' and selected"
+                                  decoration-warning="status == 'changed' and selected"
+                                  decoration-muted="status == 'duplicate' or not selected"
+                                  decoration-danger="status == 'no_employee'">
+                                <field name="selected" string="✓"/>
+                                <field name="date"/>
+                                <field name="hours"/>
+                                <field name="erfasst_person_name"/>
+                                <field name="employee_id"/>
+                                <field name="activity_name"/>
+                                <field name="description"/>
+                                <field name="status" widget="badge"
+                                       decoration-success="status == 'new'"
+                                       decoration-warning="status == 'changed'"
+                                       decoration-info="status == 'duplicate'"
+                                       decoration-danger="status == 'no_employee'"/>
+                                <field name="locked" optional="show"/>
+                            </tree>
+                        </field>
+                    </group>
+
+                    <!-- Step 3: done -->
+                    <div invisible="state != 'done'">
+                        <div class="alert alert-success o_field_widget" role="alert">
+                            <i class="fa fa-check-circle me-2"/>
+                            <strong>Import abgeschlossen — </strong>
+                            <field name="imported_count" nolabel="1" readonly="1" class="d-inline"/>
+                            <span> neu importiert, </span>
+                            <field name="updated_count" nolabel="1" readonly="1" class="d-inline"/>
+                            <span> aktualisiert.</span>
+                        </div>
+                        <group>
+                            <field name="log_id" string="Protokolleintrag" readonly="1"/>
+                        </group>
+                    </div>
+
+                </sheet>
+                <footer>
+                    <button name="action_fetch_preview"
+                            string="Vorschau laden"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'select'"/>
+                    <button name="action_confirm_import"
+                            string="Importieren"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'preview'"/>
+                    <button name="action_back"
+                            string="Zurück"
+                            type="object"
+                            invisible="state not in ('preview', 'done')"/>
+                    <button string="Abbrechen"
+                            class="btn-secondary"
+                            special="cancel"
+                            invisible="state == 'done'"/>
+                    <button string="Schließen"
+                            class="btn-secondary"
+                            special="cancel"
+                            invisible="state != 'done'"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

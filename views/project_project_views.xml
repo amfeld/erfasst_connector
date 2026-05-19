@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_project_project_form_erfasst" model="ir.ui.view">
+        <field name="name">project.project.form.erfasst</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+
+            <!-- Inject 123erfasst buttons into the form header (before the statusbar field) -->
+            <xpath expr="//header/field[@name='stage_id']" position="before">
+                <button name="action_123erfasst_push_project"
+                        type="object"
+                        string="Zu 123erfasst pushen"
+                        class="btn-secondary"
+                        icon="fa-cloud-upload"
+                        groups="erfasst_connector.group_erfasst_user"/>
+                <button name="action_123erfasst_pull_times"
+                        type="object"
+                        string="Zeiten importieren"
+                        class="btn-secondary"
+                        icon="fa-clock-o"
+                        groups="erfasst_connector.group_erfasst_user"
+                        invisible="not x_123erfasst_project_ident"/>
+                <button name="action_123erfasst_push_planning"
+                        type="object"
+                        string="Planung pushen"
+                        class="btn-secondary"
+                        icon="fa-calendar"
+                        groups="erfasst_connector.group_erfasst_user"
+                        invisible="not x_123erfasst_project_ident"/>
+            </xpath>
+
+            <!-- Tab in project settings notebook -->
+            <xpath expr="//notebook" position="inside">
+                <page string="123erfasst" name="erfasst_connector">
+                    <group>
+                        <group string="Push-Daten">
+                            <field name="x_123erfasst_project_number"
+                                   placeholder="z. B. A21233"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Sync-Status">
+                            <field name="x_123erfasst_status"
+                                   widget="badge"
+                                   decoration-success="x_123erfasst_status == 'synced'"
+                                   decoration-warning="x_123erfasst_status == 'not_synced'"
+                                   decoration-danger="x_123erfasst_status == 'error'"/>
+                            <field name="x_123erfasst_synced_at" string="Letzter Projekt-Push"/>
+                            <field name="x_123erfasst_last_pull" string="Letzter Zeiten-Import"/>
+                        </group>
+                        <group string="Technische IDs">
+                            <field name="x_123erfasst_project_ident" string="123erfasst Ident"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_erfasst" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.erfasst</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="123erfasst Connector"
+                     string="123erfasst Connector"
+                     name="erfasst_connector"
+                     id="erfasst_connector"
+                     groups="erfasst_connector.group_erfasst_manager">
+                    <block title="API-Verbindung" name="erfasst_api_block">
+                        <setting string="API-URL"
+                                 help="Vollständige GraphQL-URL, z. B. https://firma.123erfasst.de/api/graphql"
+                                 id="erfasst_api_url_setting">
+                            <field name="erfasst_api_url"
+                                   placeholder="https://firma.123erfasst.de/api/graphql"/>
+                        </setting>
+                        <setting string="API-Token"
+                                 help="Base64-kodierter Basic-Auth-Token aus den 123erfasst API-Einstellungen"
+                                 id="erfasst_api_token_setting">
+                            <field name="erfasst_api_token" password="True"/>
+                        </setting>
+                        <setting id="erfasst_test_connection_setting">
+                            <button name="action_test_erfasst_connection"
+                                    string="Verbindung testen"
+                                    type="object"
+                                    class="btn-secondary"/>
+                        </setting>
+                    </block>
+                    <block title="Delta-Sync (automatisch)" name="erfasst_cron_block">
+                        <setting string="Delta-Sync aktivieren"
+                                 help="Startet den automatischen Zeiten-Abgleich mit 123erfasst im gewählten Intervall."
+                                 id="erfasst_cron_active_setting"
+                                 documentation="/odoo/settings">
+                            <field name="erfasst_cron_active"/>
+                        </setting>
+                        <setting string="Intervall (Stunden)"
+                                 help="Wie häufig der Delta-Sync ausgeführt wird (Minimum: 1 Stunde)."
+                                 id="erfasst_cron_interval_setting"
+                                 invisible="not erfasst_cron_active">
+                            <field name="erfasst_cron_interval"/>
+                        </setting>
+                    </block>
+                    <block title="Projekt-Stammdaten" name="erfasst_project_block">
+                        <setting string="Element-Ident (Betrieb)"
+                                 help="UUID des Betriebs/Elements in 123erfasst — gilt für alle Projekte. Zu finden unter server.123erfasst.de/office/admin/api oder per API-Introspection."
+                                 id="erfasst_element_ident_setting">
+                            <field name="erfasst_element_ident"
+                                   placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"/>
+                        </setting>
+                    </block>
+                    <block title="Import-Verhalten" name="erfasst_import_block">
+                        <setting string="Geänderte Zeiten aktualisieren"
+                                 help="Bereits importierte Zeiteinträge werden aktualisiert, wenn sie sich in 123erfasst geändert haben. Gesperrte Einträge werden nie verändert."
+                                 id="erfasst_sync_updates_setting">
+                            <field name="erfasst_sync_updates"/>
+                        </setting>
+                        <setting string="Aufgaben aus Tätigkeiten erstellen"
+                                 help="Beim Zeitimport wird für jede 123erfasst-Tätigkeit automatisch eine Odoo-Aufgabe im Projekt gesucht oder angelegt."
+                                 id="erfasst_create_tasks_setting">
+                            <field name="erfasst_create_tasks"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

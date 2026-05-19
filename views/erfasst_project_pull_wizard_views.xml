@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_erfasst_project_pull_wizard_form" model="ir.ui.view">
+        <field name="name">erfasst.project.pull.wizard.form</field>
+        <field name="model">erfasst.project.pull.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Projekte aus 123erfasst importieren &amp; verknüpfen">
+                <field name="state" invisible="1"/>
+                <sheet>
+
+                    <!-- Step 1: info -->
+                    <div invisible="state != 'select'">
+                        <div class="alert alert-info" role="alert">
+                            Alle Projekte aus 123erfasst laden und mit bestehenden Odoo-Projekten abgleichen.
+                            Automatische Zuordnung per Auftragsnummer — manuell anpassbar.
+                            Nur angehakte Zeilen werden übernommen.
+                        </div>
+                    </div>
+
+                    <!-- Step 2: preview -->
+                    <div invisible="state != 'preview'">
+                        <field name="preview_line_ids" nolabel="1">
+                            <tree editable="bottom"
+                                  decoration-success="status == 'matched' and selected"
+                                  decoration-info="status == 'linked'"
+                                  decoration-muted="not selected and status != 'linked'">
+                                <field name="selected" string="✓"/>
+                                <field name="status" widget="badge" string=" "
+                                       decoration-success="status == 'matched'"
+                                       decoration-info="status == 'linked'"
+                                       decoration-warning="status == 'new'"/>
+                                <field name="erfasst_name" string="Name (123erfasst)"/>
+                                <field name="erfasst_project_number" string="Auftragsnr."/>
+                                <field name="project_id" string="Odoo-Projekt"
+                                       options="{'no_quick_create': True, 'no_create_edit': True}"/>
+                                <field name="erfasst_api_status" string="API-Status" optional="hide"/>
+                                <field name="erfasst_ident" string="Ident" optional="hide"/>
+                            </tree>
+                        </field>
+                    </div>
+
+                    <!-- Step 3: done -->
+                    <div invisible="state != 'done'">
+                        <div class="alert alert-success o_field_widget" role="alert">
+                            <i class="fa fa-check-circle me-2"/>
+                            <strong>Abgeschlossen — </strong>
+                            <field name="linked_count" nolabel="1" readonly="1" class="d-inline"/>
+                            <span> verknüpft, </span>
+                            <field name="created_count" nolabel="1" readonly="1" class="d-inline"/>
+                            <span> neu angelegt.</span>
+                        </div>
+                    </div>
+
+                </sheet>
+                <footer>
+                    <button name="action_fetch_preview"
+                            string="Projekte laden"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'select'"/>
+                    <button name="action_confirm_import"
+                            string="Übernehmen"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'preview'"/>
+                    <button name="action_back"
+                            string="Zurück"
+                            type="object"
+                            invisible="state not in ('preview', 'done')"/>
+                    <button string="Abbrechen"
+                            class="btn-secondary"
+                            special="cancel"
+                            invisible="state == 'done'"/>
+                    <button string="Schließen"
+                            class="btn-secondary"
+                            special="cancel"
+                            invisible="state != 'done'"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_erfasst_project_pull_wizard" model="ir.actions.act_window">
+        <field name="name">Projekte aus 123erfasst</field>
+        <field name="res_model">erfasst.project.pull.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Menu item under the 123erfasst root menu -->
+    <menuitem id="menu_erfasst_project_pull"
+              name="Projekte aus 123erfasst importieren"
+              parent="erfasst_connector.menu_erfasst_root"
+              action="action_erfasst_project_pull_wizard"
+              groups="erfasst_connector.group_erfasst_manager"
+              sequence="5"/>
+
+</odoo>
